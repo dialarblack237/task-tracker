@@ -1,3 +1,5 @@
 spring:
   application:
     name: task-tracker
+  profiles:
+    active: dev
