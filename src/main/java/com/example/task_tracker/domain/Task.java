@@ -1,12 +1,14 @@
 package com.example.task_tracker.domain;
 
 import jakarta.persistence.*;
-import java.time.Instant;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "tasks")
-public class Task {
+@Table(
+    name = "tasks",
+    indexes = @Index(name = "idx_tasks_owner", columnList = "owner_id")
+)
+public class Task extends Auditable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,14 +27,11 @@ public class Task {
     @Column(name = "due_date")
     private LocalDate dueDate;
 
-    @Column(name = "created_at", nullable = false, updatable = false)
-    private Instant createdAt;
-
-    @Column(name = "updated_at", nullable = false)
-    private Instant updatedAt;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "owner_id", nullable = false)
+    private User owner;
 
     protected Task() {
-        
     }
 
     public Task(String title, String description, LocalDate dueDate) {
@@ -41,5 +40,15 @@ public class Task {
         this.dueDate = dueDate;
     }
 
-    
+    public Long getId() { return id; }
+    public String getTitle() { return title; }
+    public void setTitle(String title) { this.title = title; }
+    public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
+    public TaskStatus getStatus() { return status; }
+    public void setStatus(TaskStatus status) { this.status = status; }
+    public LocalDate getDueDate() { return dueDate; }
+    public void setDueDate(LocalDate dueDate) { this.dueDate = dueDate; }
+    public User getOwner() { return owner; }
+    public void setOwner(User owner) { this.owner = owner; }
 }
