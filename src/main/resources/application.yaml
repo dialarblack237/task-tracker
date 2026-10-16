@@ -2,4 +2,20 @@ spring:
   application:
     name: task-tracker
   profiles:
-    active: dev
+    default: dev
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: update        # change to validate after Flyway (Lesson 4.3.5)
+    properties:
+      hibernate:
+        format_sql: true
+
+server:
+  port: ${PORT:8080}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
