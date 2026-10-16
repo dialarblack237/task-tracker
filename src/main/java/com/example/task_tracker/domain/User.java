@@ -29,7 +29,7 @@ public class User extends Auditable {
     )
     private List<Task> tasks = new ArrayList<>();
 
-    protected User() {
+    public User() {
     }
 
     public User(String email, String password, String displayName) {

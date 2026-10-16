@@ -37,4 +37,11 @@ public class AuthDtos {
         String tokenType,
         long expiresInSeconds
     ) {}
+
+    public record UserResponse(
+        Long id,
+        String email,
+        String displayName,
+        java.time.Instant createdAt
+    ) {}
 }
