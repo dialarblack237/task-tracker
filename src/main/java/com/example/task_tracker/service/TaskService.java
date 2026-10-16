@@ -44,11 +44,8 @@ public class TaskService {
     @Transactional
     public TaskResponse update(Long id, UpdateTaskRequest req, User owner) {
         Task task = loadOwnedTask(id, owner);
-        task.setTitle(req.title());
-        task.setDescription(req.description());
-        task.setStatus(req.status());
-        task.setDueDate(req.dueDate());
-        return TaskMapper.toResponse(task);
+        TaskMapper.applyUpdate(task, req);   // mutate in place
+        return TaskMapper.toResponse(task);  // JPA flushes on commit
     }
 
     @Transactional
