@@ -27,3 +27,14 @@ living documentation of what the API does.
 
 - All requests use `userId=1` as a temporary stand-in for `@AuthenticationPrincipal`.
 - Module 6 replaces the `userId` param with a JWT — this file will be updated at that time.
+
+
+## Swagger UI
+
+Interactive API documentation:
+
+- **Local:** http://localhost:8080/swagger-ui.html
+- **Raw spec (JSON):** http://localhost:8080/v3/api-docs
+- **Raw spec (YAML):** http://localhost:8080/v3/api-docs.yaml
+
+For protected endpoints, click the **Authorize** button and paste your JWT (Module 6).
