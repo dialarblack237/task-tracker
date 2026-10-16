@@ -1,0 +1,35 @@
+### ============================================================
+### Error cases — verify GlobalExceptionHandler output
+### Each request should return the frozen ApiError envelope.
+### ============================================================
+
+@baseUrl = http://localhost:8080
+@userId = 1
+
+### 400 — validation error (blank title, with field details)
+POST {{baseUrl}}/api/v1/tasks?userId={{userId}}
+Content-Type: application/json
+
+{
+  "title": ""
+}
+
+### 400 — validation error (title too long)
+POST {{baseUrl}}/api/v1/tasks?userId={{userId}}
+Content-Type: application/json
+
+{
+  "title": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+}
+
+### 400 — malformed JSON (unclosed brace)
+POST {{baseUrl}}/api/v1/tasks?userId={{userId}}
+Content-Type: application/json
+
+{ "title": "bad json"
+
+### 404 — task not found (nobody owns task id 99999)
+GET {{baseUrl}}/api/v1/tasks/99999?userId={{userId}}
+
+### 404 — user not found (userId 99999 doesn't exist)
+GET {{baseUrl}}/api/v1/tasks?userId=99999g
