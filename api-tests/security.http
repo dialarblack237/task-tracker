@@ -1,0 +1,27 @@
+### ============================================================
+### Security checks — verify the filter chain
+### Public endpoints should be 200, protected endpoints 401/403
+### ============================================================
+
+@baseUrl = http://localhost:8080
+
+### Public: Swagger UI (HTML page)
+GET {{baseUrl}}/swagger-ui.html
+
+### Public: OpenAPI spec (JSON)
+GET {{baseUrl}}/v3/api-docs
+
+### Public: Health check
+GET {{baseUrl}}/actuator/health
+
+### Protected: list tasks (should be 401/403 until JWT is added)
+GET {{baseUrl}}/api/v1/tasks?userId=1
+
+### Protected: create task (should be 401/403)
+POST {{baseUrl}}/api/v1/tasks?userId=1
+Content-Type: application/json
+
+{
+  "title": "Should be blocked",
+  "dueDate": "2026-02-01"
+}
