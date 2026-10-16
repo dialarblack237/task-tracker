@@ -31,7 +31,7 @@ public class Task extends Auditable {
     @JoinColumn(name = "owner_id", nullable = false)
     private User owner;
 
-    protected Task() {
+    public Task() {
     }
 
     public Task(String title, String description, LocalDate dueDate) {
