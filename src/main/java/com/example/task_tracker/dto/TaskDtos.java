@@ -46,4 +46,9 @@ public class TaskDtos {
         Instant createdAt,
         Instant updatedAt
     ) {}
+
+    public record FieldError(
+        String field,
+        String message
+    ) {}
 }
