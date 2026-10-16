@@ -1,0 +1,55 @@
+### ============================================================
+### Auth endpoints — register (login added in 6.2.3)
+### ============================================================
+
+@baseUrl = http://localhost:8080
+
+### Register — happy path (201)
+POST {{baseUrl}}/api/v1/auth/register
+Content-Type: application/json
+
+{
+  "email": "alice@example.com",
+  "password": "password123",
+  "displayName": "Alice"
+}
+
+### Register — duplicate email (409)
+POST {{baseUrl}}/api/v1/auth/register
+Content-Type: application/json
+
+{
+  "email": "alice@example.com",
+  "password": "password123",
+  "displayName": "Alice"
+}
+
+### Register — password too short (400 with details)
+POST {{baseUrl}}/api/v1/auth/register
+Content-Type: application/json
+
+{
+  "email": "bob@example.com",
+  "password": "short",
+  "displayName": "Bob"
+}
+
+### Register — invalid email (400 with details)
+POST {{baseUrl}}/api/v1/auth/register
+Content-Type: application/json
+
+{
+  "email": "not-an-email",
+  "password": "password123",
+  "displayName": "Bob"
+}
+
+### Register — missing fields (400 with multiple details)
+POST {{baseUrl}}/api/v1/auth/register
+Content-Type: application/json
+
+{
+  "email": "",
+  "password": "",
+  "displayName": ""
+}
