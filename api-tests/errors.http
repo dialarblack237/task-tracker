@@ -1,35 +1,34 @@
 ### ============================================================
-### Error cases — verify GlobalExceptionHandler output
-### Each request should return the frozen ApiError envelope.
+### Error cases — verify the frozen ApiError envelope
 ### ============================================================
 
 @baseUrl = http://localhost:8080
-@userId = 1
 
-### 400 — validation error (blank title, with field details)
-POST {{baseUrl}}/api/v1/tasks?userId={{userId}}
+### 400 — validation error (blank title)
+POST {{baseUrl}}/api/v1/auth/register
 Content-Type: application/json
 
 {
-  "title": ""
+  "email": "bad@example.com",
+  "password": "short",
+  "displayName": ""
 }
 
-### 400 — validation error (title too long)
-POST {{baseUrl}}/api/v1/tasks?userId={{userId}}
+### 400 — malformed JSON
+POST {{baseUrl}}/api/v1/auth/register
+Content-Type: application/json
+
+{ "email": "bad"
+
+### 401 — task endpoint without token
+GET {{baseUrl}}/api/v1/tasks
+
+### 409 — duplicate email (run register twice)
+POST {{baseUrl}}/api/v1/auth/register
 Content-Type: application/json
 
 {
-  "title": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  "email": "dave@example.com",
+  "password": "password123",
+  "displayName": "Dave"
 }
-
-### 400 — malformed JSON (unclosed brace)
-POST {{baseUrl}}/api/v1/tasks?userId={{userId}}
-Content-Type: application/json
-
-{ "title": "bad json"
-
-### 404 — task not found (nobody owns task id 99999)
-GET {{baseUrl}}/api/v1/tasks/99999?userId={{userId}}
-
-### 404 — user not found (userId 99999 doesn't exist)
-GET {{baseUrl}}/api/v1/tasks?userId=99999g

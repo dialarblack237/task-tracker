@@ -15,4 +15,10 @@ spring:
 
 logging:
   level:
-    org.hibernate.SQL: debug
+    "[org.hibernate.SQL]": debug
+
+app:
+  jwt:
+    # DEV ONLY — at least 32 characters for HS256
+    secret: "dev-secret-key-change-me-at-least-32-characters-long"
+    expiry-seconds: 3600

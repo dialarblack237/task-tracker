@@ -1,8 +1,10 @@
 package com.example.task_tracker.service;
 
 import com.example.task_tracker.domain.User;
+import com.example.task_tracker.dto.AuthDtos.LoginRequest;
 import com.example.task_tracker.dto.AuthDtos.RegisterRequest;
 import com.example.task_tracker.exception.EmailAlreadyUsedException;
+import com.example.task_tracker.exception.InvalidCredentialsException;
 import com.example.task_tracker.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -32,5 +34,17 @@ public class AuthService {
         u.setDisplayName(req.displayName());
         u.setPassword(encoder.encode(req.password()));   // <-- hashed
         return users.save(u);
+    }
+
+
+    @Transactional(readOnly = true)
+    public User login(LoginRequest req) {
+        User u = users.findByEmailIgnoreCase(req.email().toLowerCase())
+                .orElseThrow(InvalidCredentialsException::new);
+
+        if (!encoder.matches(req.password(), u.getPassword())) {
+            throw new InvalidCredentialsException();
+        }
+        return u;
     }
 }

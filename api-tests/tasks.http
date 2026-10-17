@@ -1,5 +1,29 @@
+### ============================================================
+### Task endpoints — require a valid JWT
+###
+### 1. Run "Login" below to get a token
+### 2. Copy the token value
+### 3. Paste it into @token below
+### ============================================================
+
+@baseUrl = http://localhost:8080
+@token = PASTE_YOUR_JWT_HERE
+
+### ---- Get a fresh token ----
+
+POST {{baseUrl}}/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "email": "dave@example.com",
+  "password": "password123"
+}
+
+### ---- Protected endpoints ----
+
 ### Create a task
-POST http://localhost:8080/api/v1/tasks?userId=1
+POST {{baseUrl}}/api/v1/tasks
+Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
@@ -8,14 +32,17 @@ Content-Type: application/json
   "dueDate": "2026-02-01"
 }
 
-### List tasks
-GET http://localhost:8080/api/v1/tasks?userId=1
+### List my tasks
+GET {{baseUrl}}/api/v1/tasks
+Authorization: Bearer {{token}}
 
 ### Get one task
-GET http://localhost:8080/api/v1/tasks/1?userId=1
+GET {{baseUrl}}/api/v1/tasks/1
+Authorization: Bearer {{token}}
 
 ### Update a task
-PUT http://localhost:8080/api/v1/tasks/1?userId=1
+PUT {{baseUrl}}/api/v1/tasks/1
+Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
@@ -26,12 +53,12 @@ Content-Type: application/json
 }
 
 ### Delete a task
-DELETE http://localhost:8080/api/v1/tasks/1?userId=1
+DELETE {{baseUrl}}/api/v1/tasks/1
+Authorization: Bearer {{token}}
 
-### Validation test (blank title)
-POST http://localhost:8080/api/v1/tasks?userId=1
-Content-Type: application/json
+### 401 test — no token
+GET {{baseUrl}}/api/v1/tasks
 
-{
-  "title": ""
-}
+### 401 test — invalid token
+GET {{baseUrl}}/api/v1/tasks
+Authorization: Bearer invalid.token.here
