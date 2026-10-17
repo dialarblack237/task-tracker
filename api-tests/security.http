@@ -1,27 +1,45 @@
 ### ============================================================
-### Security checks — verify the filter chain
-### Public endpoints should be 200, protected endpoints 401/403
+### Security checks — verify whitelist and JWT protection
 ### ============================================================
 
 @baseUrl = http://localhost:8080
 
-### Public: Swagger UI (HTML page)
-GET {{baseUrl}}/swagger-ui.html
-
-### Public: OpenAPI spec (JSON)
-GET {{baseUrl}}/v3/api-docs
-
-### Public: Health check
-GET {{baseUrl}}/actuator/health
-
-### Protected: list tasks (should be 401/403 until JWT is added)
-GET {{baseUrl}}/api/v1/tasks?userId=1
-
-### Protected: create task (should be 401/403)
-POST {{baseUrl}}/api/v1/tasks?userId=1
+### Public: register (should be 201 or 409 if user exists)
+POST {{baseUrl}}/api/v1/auth/register
 Content-Type: application/json
 
 {
-  "title": "Should be blocked",
-  "dueDate": "2026-02-01"
+  "email": "security-test@example.com",
+  "password": "password123",
+  "displayName": "Security Test"
 }
+
+### Public: login (should be 200, returns a token)
+POST {{baseUrl}}/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "email": "security-test@example.com",
+  "password": "password123"
+}
+
+### Public: health
+GET {{baseUrl}}/actuator/health
+
+### Public: OpenAPI JSON
+GET {{baseUrl}}/v3/api-docs
+
+### Public: Swagger UI
+GET {{baseUrl}}/swagger-ui.html
+
+### Protected: task list WITHOUT token → 401
+GET {{baseUrl}}/api/v1/tasks
+
+### Protected: task list WITH invalid token → 401
+GET {{baseUrl}}/api/v1/tasks
+Authorization: Bearer invalid.token.value
+
+### Protected: task list WITH valid token → 200
+### (paste the token from the login request above)
+GET {{baseUrl}}/api/v1/tasks
+Authorization: Bearer PASTE_YOUR_JWT_HERE
