@@ -5,6 +5,7 @@ import com.example.task_tracker.domain.TaskStatus;
 import com.example.task_tracker.domain.User;
 import com.example.task_tracker.dto.TaskDtos.CreateTaskRequest;
 import com.example.task_tracker.dto.TaskDtos.TaskResponse;
+import com.example.task_tracker.dto.TaskDtos.UpdateTaskRequest;
 import com.example.task_tracker.exception.ResourceNotFoundException;
 import com.example.task_tracker.repository.TaskRepository;
 import org.junit.jupiter.api.Test;
@@ -82,4 +83,69 @@ class TaskServiceCreateTest {
                 .isNotNull()
                 .isEmpty();
     }
+
+    @Test
+    void delete_removesTask_whenOwned() {
+        // GIVEN
+        User owner = withId(42L);
+        Task task = new Task();
+        task.setTitle("Bye");
+        task.setOwner(owner);
+
+        when(taskRepository.findByIdAndOwnerId(1L, 42L)).thenReturn(Optional.of(task));
+
+        // WHEN
+        taskService.delete(1L, owner);
+
+        // THEN
+        ArgumentCaptor<Task> captor = ArgumentCaptor.forClass(Task.class);
+        verify(taskRepository).delete(captor.capture());
+        assertThat(captor.getValue()).isSameAs(task);
+    }
+
+    @Test
+    void delete_throws_whenTaskNotFound() {
+        // GIVEN
+        User owner = withId(42L);
+        when(taskRepository.findByIdAndOwnerId(1L, 42L)).thenReturn(Optional.empty());
+
+        // WHEN/THEN
+        assertThatThrownBy(() -> taskService.delete(1L, owner))
+                .isInstanceOf(ResourceNotFoundException.class)
+                .hasMessage("Task not found");
+    }
+
+    @Test
+    void update_appliesChangesAndReturnsResponse() {
+        // GIVEN
+        User owner = withId(42L);
+        Task existing = new Task();
+        existing.setTitle("Old");
+        existing.setOwner(owner);
+
+        when(taskRepository.findByIdAndOwnerId(1L, 42L)).thenReturn(Optional.of(existing));
+
+        UpdateTaskRequest req = new UpdateTaskRequest("New", "desc", TaskStatus.DONE, null);
+
+        // WHEN
+        TaskResponse res = taskService.update(1L, req, owner);
+
+        // THEN
+        assertThat(res).isNotNull();
+        assertThat(existing.getTitle()).isEqualTo("New");
+        assertThat(existing.getStatus()).isEqualTo(TaskStatus.DONE);
+    }
+
+    @Test
+    void update_throws_whenTaskNotFound() {
+        // GIVEN
+        User owner = withId(42L);
+        when(taskRepository.findByIdAndOwnerId(1L, 42L)).thenReturn(Optional.empty());
+
+        // WHEN/THEN
+        assertThatThrownBy(() -> taskService.update(1L, new UpdateTaskRequest("x", null, null, null), owner))
+                .isInstanceOf(ResourceNotFoundException.class);
+    }
+
+    
 }
