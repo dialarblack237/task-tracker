@@ -5,58 +5,66 @@ import com.example.task_tracker.domain.TaskStatus;
 import com.example.task_tracker.domain.User;
 import com.example.task_tracker.dto.TaskDtos.CreateTaskRequest;
 import com.example.task_tracker.dto.TaskDtos.TaskResponse;
+import com.example.task_tracker.exception.ResourceNotFoundException;
 import com.example.task_tracker.repository.TaskRepository;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.List;
-
+import java.util.Optional;
 
 import static com.example.task_tracker.support.Users.withId;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+@ExtendWith(MockitoExtension.class)
 class TaskServiceCreateTest {
 
-    private TaskService service;
-    private TaskRepository repository;
-
-    @BeforeEach
-    void setUp() {
-        repository = mock(TaskRepository.class);
-        service = new TaskService(repository);
-    }
+    @Mock TaskRepository taskRepository;
+    @InjectMocks TaskService taskService;
 
     @Test
-    void create_setsOwnerAndDefaultsStatus() {
+    void create_setsOwnerAndDefaultsStatusTodo() {
         // GIVEN
         User owner = withId(42L);
         CreateTaskRequest req = new CreateTaskRequest("Write README", "docs", null);
 
-        when(repository.save(any(Task.class)))
+        when(taskRepository.save(any(Task.class)))
                 .thenAnswer(inv -> inv.getArgument(0));
 
         // WHEN
-        TaskResponse res = service.create(req, owner);
+        TaskResponse res = taskService.create(req, owner);
 
         // THEN
         assertThat(res).isNotNull();
         assertThat(res.title()).isEqualTo("Write README");
         assertThat(res.status()).isEqualTo(TaskStatus.TODO);
+
+        // Persisted-state assertion via ArgumentCaptor
+        ArgumentCaptor<Task> captor = ArgumentCaptor.forClass(Task.class);
+        verify(taskRepository).save(captor.capture());
+
+        Task persisted = captor.getValue();
+        assertThat(persisted.getOwner()).isEqualTo(owner);
+        assertThat(persisted.getStatus()).isEqualTo(TaskStatus.TODO);
     }
 
     @Test
-    void listForUser_returnsEmptyList_whenUserHasNoTasks() {
+    void getById_throws_whenTaskNotFound() {
         // GIVEN
         User owner = withId(42L);
-        when(repository.findAllByOwnerId(42L)).thenReturn(List.of());
+        when(taskRepository.findByIdAndOwnerId(99L, 42L))
+                .thenReturn(Optional.empty());
 
-        // WHEN
-        List<TaskResponse> result = service.listForUser(owner);
-
-        // THEN
-        assertThat(result).isEmpty();
+        // WHEN / THEN
+        assertThatThrownBy(() -> taskService.getById(99L, owner))
+                .isInstanceOf(ResourceNotFoundException.class)
+                .hasMessage("Task not found");   // capital T — matches your TaskService
     }
 }
