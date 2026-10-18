@@ -1,4 +1,4 @@
-package com.example.task_tracker;
+package com.example.task_tracker.controller;
 
 import com.example.task_tracker.domain.Task;
 import com.example.task_tracker.domain.TaskStatus;
@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDate;
@@ -21,6 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@ActiveProfiles("test")
 class TaskControllerIT {
 
     @Autowired MockMvc mockMvc;
@@ -78,4 +80,5 @@ class TaskControllerIT {
         u.setPassword("$2a$10$dummyhashforintegrationtest0000000000000000000000000000000");
         return u;
     }
+
 }
