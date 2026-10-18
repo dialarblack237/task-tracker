@@ -67,4 +67,19 @@ class TaskServiceCreateTest {
                 .isInstanceOf(ResourceNotFoundException.class)
                 .hasMessage("Task not found");   // capital T — matches your TaskService
     }
+
+    @Test
+    void listForUser_chainedAssertions() {
+        // GIVEN
+        User owner = withId(42L);
+        when(taskRepository.findAllByOwnerId(42L)).thenReturn(java.util.List.of());
+
+        // WHEN
+        var result = taskService.listForUser(owner);
+
+        // THEN — chained on the same subject
+        assertThat(result)
+                .isNotNull()
+                .isEmpty();
+    }
 }
