@@ -18,8 +18,22 @@ public class JwtService {
 
     public JwtService(JwtProperties props) {
         this.props = props;
-        this.key = Keys.hmacShaKeyFor(
-                props.secret().getBytes(StandardCharsets.UTF_8));
+        this.key = buildKey(props);
+    }
+
+    private static SecretKey buildKey(JwtProperties props) {
+        String secret = props.secret();
+        if (secret == null || secret.isBlank() || secret.startsWith("${")) {
+            throw new IllegalStateException(
+                "app.jwt.secret is not set. Provide JWT_SECRET as an environment variable "
+                + "or set app.jwt.secret in application-<profile>.yaml.");
+        }
+        byte[] bytes = secret.getBytes(StandardCharsets.UTF_8);
+        if (bytes.length < 32) {
+            throw new IllegalStateException(
+                "app.jwt.secret must be at least 32 bytes (got " + bytes.length + ").");
+        }
+        return Keys.hmacShaKeyFor(bytes);
     }
 
     public String generateToken(Long userId, String email) {
