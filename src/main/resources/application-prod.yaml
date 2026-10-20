@@ -13,7 +13,7 @@ spring:
     show-sql: false
     open-in-view: false
     hibernate:
-      ddl-auto: none
+      ddl-auto: validate
 
   flyway:
     enabled: true

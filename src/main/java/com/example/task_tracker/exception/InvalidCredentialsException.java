@@ -1,3 +1,4 @@
+
 package com.example.task_tracker.exception;
 
 import org.springframework.http.HttpStatus;
