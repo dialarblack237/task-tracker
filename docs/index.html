@@ -1,0 +1,57 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Personal Task Tracker API</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body { font-family: system-ui, -apple-system, sans-serif; max-width: 720px;
+           margin: 48px auto; padding: 0 16px; line-height: 1.6;
+           color: #1a1a1a; }
+    h1   { margin-bottom: 4px; font-size: 28px; }
+    h2   { margin-top: 32px; font-size: 18px; color: #0a66c2; }
+    .sub { color: #555; margin-top: 0; font-size: 16px; }
+    ul   { padding-left: 22px; }
+    li   { margin-bottom: 8px; }
+    a    { color: #0a66c2; }
+    a:hover { text-decoration: underline; }
+    code { background: #f4f4f4; padding: 2px 6px; border-radius: 4px;
+           font-family: ui-monospace, monospace; font-size: 0.9em; }
+    .note { color: #666; font-size: 14px; margin-top: 40px;
+            padding-top: 16px; border-top: 1px solid #eee; }
+  </style>
+</head>
+<body>
+  <h1>Personal Task Tracker API</h1>
+  <p class="sub">REST API to register, log in, and manage personal tasks.<br>
+     Spring Boot · Java 21 · PostgreSQL · JWT</p>
+
+  <h2>Try it live</h2>
+  <ul>
+    <li><a href="https://task-tracker-j9q5.onrender.com/swagger-ui/index.html">
+        Swagger UI — interactive API explorer</a></li>
+    <li><a href="https://task-tracker-j9q5.onrender.com/actuator/health">
+        Health check</a></li>
+    <li><a href="https://github.com/dialarblack237/task-tracker">
+        Source code on GitHub</a></li>
+  </ul>
+
+  <h2>What it does</h2>
+  <ul>
+    <li>Register and log in with JWT authentication</li>
+    <li>Create, list, update, and delete your own tasks</li>
+    <li>Per-user ownership enforced at the SQL level (404 for other users' tasks)</li>
+    <li>Documented with OpenAPI / Swagger UI</li>
+  </ul>
+
+  <h2>How it is built</h2>
+  <p>Java 21 · Spring Boot · Spring Data JPA · Spring Security ·
+     Flyway · JUnit 5 · Mockito · GitHub Actions · Docker ·
+     Render · Neon Postgres</p>
+
+  <p class="note">
+    The API runs on Render's free tier — it sleeps after 15 minutes
+    of inactivity, so the first request may take ~30 seconds to wake up.
+  </p>
+</body>
+</html>
