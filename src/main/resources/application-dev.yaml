@@ -15,8 +15,9 @@ spring:
 
 logging:
   level:
+    root: INFO
+    com.example.task_tracker: DEBUG
     "[org.hibernate.SQL]": debug
-
 app:
   jwt:
     # DEV ONLY — at least 32 characters for HS256

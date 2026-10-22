@@ -1,0 +1,13 @@
+<configuration>
+  <property name="PATTERN" value="%d{ISO8601} %level [%thread] %X{requestId} %logger{36} : %msg%n" />
+
+  <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>${PATTERN}</pattern>
+    </encoder>
+  </appender>
+
+  <root level="INFO">
+    <appender-ref ref="CONSOLE" />
+  </root>
+</configuration>
